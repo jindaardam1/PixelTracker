@@ -1,6 +1,8 @@
 import os
 from flask import Flask, send_file, request
 from colorama import init, Fore, Style
+
+from src.services.CreateDB import CreateDB
 from src.utils.LogManager import Logs
 
 # Author: Jagoba Inda
@@ -50,3 +52,5 @@ if __name__ == '__main__':
     app.run(debug=False)
 
 print(Fore.LIGHTGREEN_EX + "Server loaded successfully" + Fore.RESET)
+
+CreateDB.create_database()
