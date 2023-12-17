@@ -4,6 +4,7 @@ from colorama import init, Fore, Style
 
 from src.services.CreateDB import CreateDB
 from src.utils.LogManager import Logs
+from src.services.InsertDB import DataValidator
 
 # Author: Jagoba Inda
 
@@ -37,6 +38,7 @@ def tracker():
         print(Fore.RED + "\t", end="")
         Logs.info_log_manager("New email opening logged in the database with IP " + user_ip)
         print(Style.RESET_ALL, end="")
+        DataValidator.validate_email_opening_data(int(user_id), user_ip, user_agent)
 
         # Return the 1-pixel image
         return send_file(image_path)
