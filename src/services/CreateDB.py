@@ -11,18 +11,33 @@ class CreateDB:
     DB_NAME = 'Datos.db'
 
     @staticmethod
-    def _get_create_document():
-        # Path to the SQL file
-        sql_file_path = os.path.join(os.path.dirname(__file__), '../..', 'resources', 'createTable.sql')
+    def _get_create_documents():
+        # Path to the directory containing SQL files
+        sql_directory_path = os.path.join(os.path.dirname(__file__), '../..', 'resources', 'sql_files')
 
         try:
-            # Open the file in read mode
-            with open(sql_file_path, 'r') as sql_file:
-                # Read the content of the file
-                create_sql = sql_file.read()
-                return create_sql
+            # Get a list of all files in the directory
+            file_list = os.listdir(sql_directory_path)
+
+            # Initialize an empty list to store SQL codes
+            sql_codes = []
+
+            # Loop through each file in the directory
+            for file_name in file_list:
+                # Construct the full path to the file
+                file_path = os.path.join(sql_directory_path, file_name)
+
+                # Check if it's a file (not a subdirectory)
+                if os.path.isfile(file_path):
+                    # Open the file in read mode
+                    with open(file_path, 'r') as sql_file:
+                        # Read the content of the file and append to the list
+                        sql_codes.append(sql_file.read())
+
+            return sql_codes
+
         except FileNotFoundError:
-            print(f"Error: The file {sql_file_path} was not found.")
+            print(f"Error: The directory {sql_directory_path} was not found.")
             return None
 
     @classmethod
@@ -47,12 +62,14 @@ class CreateDB:
                 # Create a cursor object to execute SQL commands
                 cursor = conn.cursor()
 
-                # Get the SQL string for table creation
-                sql_string = cls._get_create_document()
+                # Get the SQL strings for table creation
+                sql_strings = cls._get_create_documents()
 
-                if sql_string is not None:
-                    # Create the EmailsAbiertos table
-                    cursor.execute(sql_string)
+                if sql_strings is not None:
+                    # Create the db tables
+                    for codes in sql_strings:
+                        cursor.execute(codes)
+
                 else:
                     # Log an error if there's an issue getting the SQL script
                     Logs.error_log_manager_custom("Error getting the database table creation script")
