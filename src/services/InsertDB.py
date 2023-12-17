@@ -100,4 +100,8 @@ class DataValidator:
     def _user_agent_validation(user_agent):
         # Remove special and potentially dangerous characters
         cleaned_user_agent = ''.join(char if char.isalnum() or char.isspace() else ' ' for char in user_agent)
+
+        # Limit the size to a maximum of 150 characters
+        cleaned_user_agent = cleaned_user_agent[:150]
+
         return cleaned_user_agent.strip()  # Remove leading and trailing spaces
