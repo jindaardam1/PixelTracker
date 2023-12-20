@@ -104,4 +104,9 @@ class DataValidator:
         # Limit the size to a maximum of 150 characters
         cleaned_user_agent = cleaned_user_agent[:150]
 
+        # Check for SQL keywords
+        sql_keywords = ['SELECT', 'FROM', 'WHERE', 'AND', 'OR', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'TABLE', 'CREATE']
+        if any(keyword in cleaned_user_agent.upper() for keyword in sql_keywords):
+            return "User Agent removed due to security concerns"
+
         return cleaned_user_agent.strip()  # Remove leading and trailing spaces
