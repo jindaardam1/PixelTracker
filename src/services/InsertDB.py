@@ -110,3 +110,60 @@ class DataValidator:
             return "User Agent removed due to security concerns"
 
         return cleaned_user_agent.strip()  # Remove leading and trailing spaces
+
+
+class InsertNewEmails:
+    NEW_EMAILS_FILE_PATH = os.path.join(os.getcwd(), "resources", "new_emails.txt")
+
+    @staticmethod
+    def read_new_emails():
+        try:
+            new_emails = []
+            with open(InsertNewEmails.NEW_EMAILS_FILE_PATH, 'r') as txt:
+                for line in txt:
+                    new_emails.append(line.strip())
+            return new_emails
+        except IOError as e:
+            # Log or handle the specific error for file reading
+            print(f"Error reading new emails file: {e}")
+            Logs.error_log_manager_custom(f"Error reading new emails file: {e}")
+            return []
+
+    @staticmethod
+    def _delete_txt():
+        try:
+            # Overwrite the file without including anything
+            with open(InsertNewEmails.NEW_EMAILS_FILE_PATH, 'w'):
+                pass
+        except IOError as e:
+            # Log or handle the specific error for file writing
+            print(f"Error deleting content of new emails file: {e}")
+            Logs.error_log_manager_custom(f"Error deleting content of new emails file: {e}")
+
+    @staticmethod
+    def insert_new_emails(emails):
+        try:
+            # Connect to the database using a context manager
+            with sqlite3.connect(InsertDB.get_db_path()) as conn:
+                cursor = conn.cursor()
+
+                # Use a transaction to ensure atomicity
+                conn.execute("BEGIN TRANSACTION;")
+
+                for new_email in emails:
+                    # Use a parameterized query to avoid SQL injection
+                    ins = "INSERT INTO EmailsGuardados (email) VALUES (?);"
+                    values = (new_email,)
+
+                    cursor.execute(ins, values)
+
+                    print(Fore.GREEN + f"\tNew email inserted into the database: {Fore.BLUE} {new_email}" + Fore.RESET)
+
+                # Commit the changes to the database
+                conn.execute("COMMIT;")
+
+            InsertNewEmails._delete_txt()
+
+        except sqlite3.Error as e:
+            # Log any SQLite errors
+            Logs.error_log_manager_custom(f"Error inserting data into EmailsGuardados table: {e}")

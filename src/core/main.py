@@ -4,7 +4,7 @@ from colorama import init, Fore, Style
 
 from src.services.CreateDB import CreateDB
 from src.utils.LogManager import Logs
-from src.services.InsertDB import DataValidator
+from src.services.InsertDB import DataValidator, InsertNewEmails
 
 # Author: Jagoba Inda
 
@@ -56,3 +56,5 @@ if __name__ == '__main__':
 print(Fore.LIGHTGREEN_EX + "Server loaded successfully" + Fore.RESET)
 
 CreateDB.create_database()
+
+InsertNewEmails.insert_new_emails(InsertNewEmails.read_new_emails())
