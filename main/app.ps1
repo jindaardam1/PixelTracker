@@ -35,7 +35,7 @@ Install-Package -packageName "tabulate" -packageVersion "0.9.0"
 
 
 # Use Waitress to serve the Flask app on all available network interfaces at port 5000
-waitress-serve --listen=0.0.0.0:5000 src.core.main:app
+waitress-serve --listen=0.0.0.0:5000 src.core.main_tracker:app
 
 # Pause to keep the console window open after the script finishes
 Pause
