@@ -2,6 +2,7 @@ import os
 import sqlite3
 from datetime import datetime
 import ipaddress
+import re
 
 from colorama import Fore
 from src.utils.LogManager import Logs
@@ -114,6 +115,7 @@ class DataValidator:
 
 class InsertNewEmails:
     NEW_EMAILS_FILE_PATH = os.path.join(os.getcwd(), "resources", "new_emails.txt")
+    email_pattern = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
     @staticmethod
     def read_new_emails():
@@ -140,6 +142,24 @@ class InsertNewEmails:
             print(f"Error deleting content of new emails file: {e}")
             Logs.error_log_manager_custom(f"Error deleting content of new emails file: {e}")
 
+    @classmethod
+    def _is_valid_email(cls, email):
+        if not bool(re.match(cls.email_pattern, email)):
+            return False  # Return False immediately if the format is not valid
+
+        # Perform a database query to check if the email already exists
+        query = "SELECT COUNT(*) FROM EmailsGuardados WHERE email = ?;"
+
+        db_path = InsertDB.get_db_path()
+
+        # Connect to the database
+        with sqlite3.connect(db_path) as connection:
+            cursor = connection.cursor()
+            cursor.execute(query, (email,))
+            result = cursor.fetchone()
+
+        return result[0] == 0  # If result[0] is 0, it means the email does not exist in the database
+
     @staticmethod
     def insert_new_emails(emails):
         try:
@@ -151,13 +171,19 @@ class InsertNewEmails:
                 conn.execute("BEGIN TRANSACTION;")
 
                 for new_email in emails:
-                    # Use a parameterized query to avoid SQL injection
-                    ins = "INSERT INTO EmailsGuardados (email) VALUES (?);"
-                    values = (new_email,)
+                    if not new_email.strip() == "":
+                        if InsertNewEmails._is_valid_email(new_email):
+                            # Use a parameterized query to avoid SQL injection
+                            ins = "INSERT INTO EmailsGuardados (email) VALUES (?);"
+                            values = (new_email,)
 
-                    cursor.execute(ins, values)
+                            cursor.execute(ins, values)
 
-                    print(Fore.GREEN + f"\tNew email inserted into the database: {Fore.BLUE} {new_email}" + Fore.RESET)
+                            print(f"\t{Fore.GREEN}Email inserted into the database: " +
+                                  f"{Fore.BLUE} {new_email} {Fore.RESET}")
+                        else:
+                            print(f"\t{Fore.RED}Email{Fore.BLUE} {new_email} {Fore.RED}" +
+                                  f"is not a valid email or already exists{Fore.RESET}")
 
                 # Commit the changes to the database
                 conn.execute("COMMIT;")
@@ -166,4 +192,5 @@ class InsertNewEmails:
 
         except sqlite3.Error as e:
             # Log any SQLite errors
+            print(f"{Fore.RED}Error inserting data into EmailsGuardados table: {e} {Fore.RESET}")
             Logs.error_log_manager_custom(f"Error inserting data into EmailsGuardados table: {e}")
