@@ -131,11 +131,11 @@ class InsertNewEmails:
             Logs.error_log_manager_custom(f"Error reading new emails file: {e}")
             return []
 
-    @staticmethod
-    def _delete_txt():
+    @classmethod
+    def _clear_file_content(cls):
         try:
             # Overwrite the file without including anything
-            with open(InsertNewEmails.NEW_EMAILS_FILE_PATH, 'w'):
+            with open(cls.NEW_EMAILS_FILE_PATH, 'w'):
                 pass
         except IOError as e:
             # Log or handle the specific error for file writing
@@ -144,24 +144,27 @@ class InsertNewEmails:
 
     @classmethod
     def _is_valid_email(cls, email):
-        if not bool(re.match(cls.email_pattern, email)):
-            return False  # Return False immediately if the format is not valid
+        try:
+            if not bool(re.match(cls.email_pattern, email)):
+                return False  # Return False immediately if the format is not valid
 
-        # Perform a database query to check if the email already exists
-        query = "SELECT COUNT(*) FROM EmailsGuardados WHERE email = ?;"
+            # Perform a database query to check if the email already exists
+            query = "SELECT COUNT(*) FROM EmailsGuardados WHERE email = ?;"
 
-        db_path = InsertDB.get_db_path()
+            # Connect to the database
+            with sqlite3.connect(InsertDB.get_db_path()) as connection:
+                cursor = connection.cursor()
+                cursor.execute(query, (email,))
+                result = cursor.fetchone()
 
-        # Connect to the database
-        with sqlite3.connect(db_path) as connection:
-            cursor = connection.cursor()
-            cursor.execute(query, (email,))
-            result = cursor.fetchone()
+            return result[0] == 0  # If result[0] is 0, it means the email does not exist in the database
 
-        return result[0] == 0  # If result[0] is 0, it means the email does not exist in the database
+        except sqlite3.Error as e:
+            print(f"Error querying the database: {e}")
+            return False  # Return False in case of any database error
 
-    @staticmethod
-    def insert_new_emails(emails):
+    @classmethod
+    def insert_new_emails(cls, emails):
         try:
             # Connect to the database using a context manager
             with sqlite3.connect(InsertDB.get_db_path()) as conn:
@@ -172,7 +175,7 @@ class InsertNewEmails:
 
                 for new_email in emails:
                     if not new_email.strip() == "":
-                        if InsertNewEmails._is_valid_email(new_email):
+                        if cls._is_valid_email(new_email):
                             # Use a parameterized query to avoid SQL injection
                             ins = "INSERT INTO EmailsGuardados (email) VALUES (?);"
                             values = (new_email,)
@@ -188,7 +191,7 @@ class InsertNewEmails:
                 # Commit the changes to the database
                 conn.execute("COMMIT;")
 
-            InsertNewEmails._delete_txt()
+            cls._clear_file_content()
 
         except sqlite3.Error as e:
             # Log any SQLite errors
