@@ -6,6 +6,7 @@ import re
 
 from colorama import Fore
 from src.utils.LogManager import Logs
+from src.utils.IpToLocation import IpToLocation
 
 
 class InsertDB:
@@ -27,9 +28,12 @@ class InsertDB:
             conn = sqlite3.connect(cls.get_db_path())
             cursor = conn.cursor()
 
+            user_location = IpToLocation.get_location(ip)
+
             # Use a parameterized query to avoid SQL injection
-            ins = "INSERT INTO EmailsAbiertos (email_guardado_id, ip, user_agent, fecha_abierto) VALUES (?, ?, ?, ?);"
-            values = (id_user, ip, user_agent, current_datetime)
+            ins = ("INSERT INTO EmailsAbiertos (email_guardado_id, ip, location, user_agent, fecha_abierto) " +
+                   "VALUES (?, ?, ?, ?, ?);")
+            values = (id_user, ip, user_location, user_agent, current_datetime)
 
             cursor.execute(ins, values)
 
@@ -166,6 +170,9 @@ class InsertNewEmails:
     @classmethod
     def insert_new_emails(cls, emails):
         try:
+            # Transform emails to a set with unique elements
+            unique_emails = set(emails)
+
             # Connect to the database using a context manager
             with sqlite3.connect(InsertDB.get_db_path()) as conn:
                 cursor = conn.cursor()
@@ -173,7 +180,7 @@ class InsertNewEmails:
                 # Use a transaction to ensure atomicity
                 conn.execute("BEGIN TRANSACTION;")
 
-                for new_email in emails:
+                for new_email in unique_emails:
                     if not new_email.strip() == "":
                         if cls._is_valid_email(new_email):
                             # Use a parameterized query to avoid SQL injection
@@ -182,11 +189,11 @@ class InsertNewEmails:
 
                             cursor.execute(ins, values)
 
-                            print(f"\t{Fore.GREEN}Email inserted into the database: " +
+                            print(f"\t{Fore.GREEN}Email inserted into the database: "
                                   f"{Fore.BLUE} {new_email} {Fore.RESET}")
                         else:
                             print(f"\t{Fore.RED}Email{Fore.BLUE} {new_email} {Fore.RED}" +
-                                  f"is not a valid email or already exists{Fore.RESET}")
+                                  f" is not a valid email or already exists{Fore.RESET}")
 
                 # Commit the changes to the database
                 conn.execute("COMMIT;")
@@ -195,5 +202,5 @@ class InsertNewEmails:
 
         except sqlite3.Error as e:
             # Log any SQLite errors
-            print(f"{Fore.RED}Error inserting data into EmailsGuardados table: {e} {Fore.RESET}")
+            print(f"{Fore.RED}\tError inserting data into EmailsGuardados table: {e} {Fore.RESET}")
             Logs.error_log_manager_custom(f"Error inserting data into EmailsGuardados table: {e}")
