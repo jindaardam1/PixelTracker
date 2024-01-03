@@ -19,8 +19,8 @@ function isEmail(liElement) {
  * Iterates through all <li> elements, identifies valid emails, and copies them to the clipboard.
  */
 function handleClick() {
-    // Get all <li> elements on the page
-    const liElements = document.querySelectorAll('li');
+    // Get all <td> elements on the page
+    const liElements = document.querySelectorAll('td');
 
     // Array to store valid emails
     const validEmails = [];
