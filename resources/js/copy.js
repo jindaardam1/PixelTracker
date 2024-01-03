@@ -22,18 +22,18 @@ function handleClick() {
     // Get all <td> elements on the page
     const liElements = document.querySelectorAll('td');
 
-    // Array to store valid emails
-    const validEmails = [];
+    // Set to store unique valid emails
+    const uniqueValidEmails = new Set();
 
-    // Iterate over each <li> element and check if the text is an email
+    // Iterate over each <td> element and check if the text is an email
     liElements.forEach(function (liElement) {
         if (isEmail(liElement)) {
-            validEmails.push(liElement.textContent.trim());
+            uniqueValidEmails.add(liElement.textContent.trim());
         }
     });
 
-    // Copy emails to clipboard, separated by semicolon
-    const emailsToCopy = validEmails.join(';');
+    // Convert the Set to an array and join emails with a semicolon
+    const emailsToCopy = Array.from(uniqueValidEmails).join(';');
 
     // Use the Clipboard API to copy the text to the clipboard
     navigator.clipboard.writeText(emailsToCopy)
@@ -45,6 +45,7 @@ function handleClick() {
             console.error('Error copying to clipboard:', err);
         });
 }
+
 
 // Add an event listener to the button with the ID "buttonCopyToClipboard"
 const copyButton = document.getElementById('buttonCopyToClipboard');

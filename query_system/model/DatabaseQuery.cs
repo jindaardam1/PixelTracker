@@ -40,8 +40,6 @@ namespace PixelTrackerDBQuery.Model
             }
         }
 
-
-
         private static string ConvertDataTableToHtml(DataTable dataTable)
         {
             try
@@ -90,9 +88,6 @@ namespace PixelTrackerDBQuery.Model
             }
         }
 
-
-
-
         private static void ShowDataOnBrowser(string htmlData)
         {
             try
@@ -116,7 +111,6 @@ namespace PixelTrackerDBQuery.Model
                 MessageBox.Show($"Error displaying data in the browser: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         private static string LoadCodeFromFile(string path)
         {
