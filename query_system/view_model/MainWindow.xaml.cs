@@ -111,7 +111,7 @@ namespace PixelTrackerDBQuery
                 return "SELECT EA.*, EG.email " +
                 "FROM EmailsAbiertos EA " +
                 "JOIN EmailsGuardados EG ON EA.email_guardado_id = EG.id " +
-                $"WHERE EA.location = {location} " +
+                $"WHERE EA.location = '{location}' " +
                 $"ORDER BY EA.{GetOrderByColumn(order.Content.ToString())};";
             }
             else
@@ -140,7 +140,7 @@ namespace PixelTrackerDBQuery
 
         private string GetEmailQueryString(string email)
         {
-            return $"SELECT COUNT(*) FROM EmailsGuardados WHERE email = '{email}'";
+            return $"SELECT COUNT(*) AS '0 = not found / 1 = found' FROM EmailsGuardados WHERE email = '{email}'";
         }
     }
 }

@@ -12,14 +12,12 @@ function Install-Package {
     }
 }
 
+
 # Set console window size
 [console]::SetWindowSize(140, 50)
 
 # Set console code page to UTF-8 for better character support
 chcp 65001 | Out-Null
-
-# Change directory to the parent directory using Set-Location
-Set-Location ..
 
 # Using the function to install Colorama
 Install-Package -packageName "colorama" -packageVersion "0.4.6"
@@ -33,11 +31,20 @@ Install-Package -packageName "Flask" -packageVersion "3.0.0"
 # Using the function to install tabulate
 Install-Package -packageName "tabulate" -packageVersion "0.9.0"
 
-# Execute the db query GUI
-Start-Process -FilePath "main/PixelTrackerDBQuery.exe"
+try {
+    # Execute the db query GUI
+    Start-Process -FilePath "PixelTrackerDBQuery.exe" -ErrorAction Stop
 
-# Use Waitress to serve the Flask app on all available network interfaces at port 5000
-waitress-serve --listen=0.0.0.0:5000 src.core.main_tracker:app
+    # Change directory to the parent directory using Set-Location
+    Set-Location ..
 
-# Pause to keep the console window open after the script finishes
-Pause
+    # Use Waitress to serve the Flask app on all available network interfaces at port 5000
+    waitress-serve --listen=0.0.0.0:5000 src.core.main_tracker:app
+
+    # Pause to keep the console window open after the script finishes
+    Pause
+}
+catch {
+    Write-Host "Error starting process: $_"
+}
+
