@@ -110,8 +110,33 @@
         </Grid>
 
         <!-- Content in the first row and second column -->
-        <Grid Grid.Row="0" Grid.Column="2">
-            <!-- Your content here -->
+        <Grid Grid.Row="0" Grid.Column="2" Margin="30">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                <TextBlock Text="Search for email in database" Style="{StaticResource TextBlockStyleMenu}" HorizontalAlignment="Center"/>
+                <TextBox Width="350" Height="40" Style="{StaticResource TextBoxStyleMenu}" Margin="0 30" Name="EmailTextBox"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
+                <Button Width="200" Style="{StaticResource ButtonStyleWithBorderRadius}" Content="SEARCH EMAIL" Click="OnSearchEmailButtonClick" VerticalAlignment="Bottom" Name="SearchEmailButton"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 15" VerticalAlignment="Center">
+                <Button Width="200" Style="{StaticResource ButtonStyleWithBorderRadius}" Content="RUN EMAIL SERVER" Click="OnRunEmailServerButtonClick" VerticalAlignment="Bottom" Name="RunEmailServerButton"/>
+            </StackPanel>
+
+
+
         </Grid>
 
         <!-- Content in the second row and first column -->

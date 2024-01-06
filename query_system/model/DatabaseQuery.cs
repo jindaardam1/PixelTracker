@@ -6,7 +6,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace PixelTrackerDBQuery.Model
 {
@@ -27,7 +26,7 @@ namespace PixelTrackerDBQuery.Model
                         using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(command))
                         {
                             DataTable dataTable = new DataTable();
-                            await Task.Run(() => adapter.Fill(dataTable));
+                            _ = await Task.Run(() => adapter.Fill(dataTable));
 
                             ShowDataOnBrowser(ConvertDataTableToHtml(dataTable));
                         }

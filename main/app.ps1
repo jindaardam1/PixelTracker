@@ -33,6 +33,8 @@ Install-Package -packageName "Flask" -packageVersion "3.0.0"
 # Using the function to install tabulate
 Install-Package -packageName "tabulate" -packageVersion "0.9.0"
 
+# Execute the db query GUI
+Start-Process -FilePath "main/PixelTrackerDBQuery.exe"
 
 # Use Waitress to serve the Flask app on all available network interfaces at port 5000
 waitress-serve --listen=0.0.0.0:5000 src.core.main_tracker:app

@@ -1,18 +1,6 @@
 ﻿using PixelTrackerDBQuery.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PixelTrackerDBQuery
 {
@@ -60,7 +48,6 @@ namespace PixelTrackerDBQuery
             LocationQueryButton.IsEnabled = false;
 
             await DatabaseQuery.ExecuteDatabaseQueryAsync(GetLocationQueryString());
-            MessageBox.Show(GetLocationQueryString());
 
             LocationQueryButton.IsEnabled = true;
         }
@@ -69,6 +56,27 @@ namespace PixelTrackerDBQuery
         {
             LocationTextBox.Text = "";
             OrderByComboBoxLocation.SelectedIndex = 0;
+        }
+
+        private async void OnSearchEmailButtonClick(object sender, RoutedEventArgs e)
+        {
+            var email = EmailTextBox.Text;
+
+            if (email != "")
+            {
+                string query = GetEmailQueryString(email);
+
+                SearchEmailButton.IsEnabled = false;
+
+                await DatabaseQuery.ExecuteDatabaseQueryAsync(query);
+
+                SearchEmailButton.IsEnabled = true;
+            }
+        }
+
+        private void OnRunEmailServerButtonClick(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Email server comming soon...", "Email server", MessageBoxButton.OK, MessageBoxImage.Information) ;
         }
 
         private string GetUserIdQueryString()
@@ -130,5 +138,9 @@ namespace PixelTrackerDBQuery
             }
         }
 
+        private string GetEmailQueryString(string email)
+        {
+            return $"SELECT COUNT(*) FROM EmailsGuardados WHERE email = '{email}'";
+        }
     }
 }
