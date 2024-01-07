@@ -11,9 +11,9 @@ namespace PixelTrackerDBQuery.Model
 {
     class DatabaseQuery
     {
-        static string connectionString = "Data Source=../db/Datos.db;Version=3;";
+        private const string connectionString = "Data Source=../db/Datos.db;Version=3;";
 
-        public static async Task ExecuteDatabaseQueryAsync(string query)
+        public static async Task<DataTable> ExecuteDatabaseQueryAsync(string query)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace PixelTrackerDBQuery.Model
                             DataTable dataTable = new DataTable();
                             _ = await Task.Run(() => adapter.Fill(dataTable));
 
-                            ShowDataOnBrowser(ConvertDataTableToHtml(dataTable));
+                            return dataTable;
                         }
                     }
                 }
@@ -36,10 +36,12 @@ namespace PixelTrackerDBQuery.Model
             catch (Exception ex)
             {
                 MessageBox.Show($"Error executing the query: {ex.Message}");
+                return null;
             }
         }
 
-        private static string ConvertDataTableToHtml(DataTable dataTable)
+
+        public static string ConvertDataTableToHtml(DataTable dataTable)
         {
             try
             {
@@ -87,7 +89,7 @@ namespace PixelTrackerDBQuery.Model
             }
         }
 
-        private static void ShowDataOnBrowser(string htmlData)
+        public static void ShowDataOnBrowser(string htmlData)
         {
             try
             {

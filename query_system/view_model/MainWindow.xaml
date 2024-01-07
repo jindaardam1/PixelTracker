@@ -122,6 +122,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Name="EmailFoundTextBlock"/>
+
             <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                 <TextBlock Text="Search for email in database" Style="{StaticResource TextBlockStyleMenu}" HorizontalAlignment="Center"/>
                 <TextBox Width="350" Height="40" Style="{StaticResource TextBoxStyleMenu}" Margin="0 30" Name="EmailTextBox"/>
@@ -134,8 +136,6 @@
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 15" VerticalAlignment="Center">
                 <Button Width="200" Style="{StaticResource ButtonStyleWithBorderRadius}" Content="RUN EMAIL SERVER" Click="OnRunEmailServerButtonClick" VerticalAlignment="Bottom" Name="RunEmailServerButton"/>
             </StackPanel>
-
-
 
         </Grid>
 
