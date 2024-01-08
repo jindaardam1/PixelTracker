@@ -31,6 +31,9 @@ Install-Package -packageName "Flask" -packageVersion "3.0.0"
 # Using the function to install tabulate
 Install-Package -packageName "tabulate" -packageVersion "0.9.0"
 
+# Using the function to install requests
+Install-Package -packageName "requests" -packageVersion "2.31.0"
+
 try {
     # Execute the db query GUI
     Start-Process -FilePath "PixelTrackerDBQuery.exe" -ErrorAction Stop
