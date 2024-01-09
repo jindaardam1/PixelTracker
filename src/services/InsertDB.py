@@ -28,12 +28,15 @@ class InsertDB:
             conn = sqlite3.connect(cls.get_db_path())
             cursor = conn.cursor()
 
-            user_location = IpToLocation.get_location(ip)
+            ip_info = IpToLocation.get_ip_info(ip)
+
+            location = ip_info.__getitem__(0)
+            zip_code = ip_info.__getitem__(1)
 
             # Use a parameterized query to avoid SQL injection
-            ins = ("INSERT INTO EmailsAbiertos (email_guardado_id, ip, location, user_agent, fecha_abierto) " +
-                   "VALUES (?, ?, ?, ?, ?);")
-            values = (id_user, ip, user_location, user_agent, current_datetime)
+            ins = ("INSERT INTO EmailsAbiertos (email_guardado_id, ip, location, zip, user_agent, fecha_abierto) " +
+                   "VALUES (?, ?, ?, ?, ?, ?);")
+            values = (id_user, ip, location, zip_code,  user_agent, current_datetime)
 
             cursor.execute(ins, values)
 

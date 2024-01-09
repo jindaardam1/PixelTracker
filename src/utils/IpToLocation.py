@@ -1,18 +1,21 @@
 import json
 import requests
 
+
 class IpToLocation:
-    base_url = "http://ip-api.com/json/?lang=ES/"
+    base_url = "http://ip-api.com/json/"
 
     @classmethod
-    def get_location(cls, ip):
+    def get_ip_info(cls, ip):
         # Obtain JSON data from the API
         json_data = cls.get_json_from_api(ip)
         if json_data:
-            # Print the formatted JSON for better readability
-            print(json.dumps(json_data, indent=2))
-            # Retrieve and return the value associated with the key "regionName"
-            return cls.search_value_in_json(json_data, "regionName")
+            # Retrieve the values associated with the keys "regionName" and "zip"
+            region_name = cls.search_value_in_json(json_data, "regionName")
+            zip_code = cls.search_value_in_json(json_data, "zip")
+
+            # Return a tuple containing both values
+            return region_name, zip_code
         return None
 
     @classmethod
@@ -44,3 +47,10 @@ class IpToLocation:
             # Print an error message if the key is not found in the JSON
             print(f"Key '{key}' not found in JSON.")
             return None
+
+    @classmethod
+    def get_complete_ip_info_json_string(cls, ip):
+        # Obtain JSON data from the API
+        json_data = cls.get_json_from_api(ip)
+
+        return json.dumps(json_data, indent=2)
