@@ -1,5 +1,8 @@
 import json
 import requests
+from colorama import Fore
+
+from src.utils.LogManager import Logs
 
 
 class IpToLocation:
@@ -37,20 +40,21 @@ class IpToLocation:
             print(f"Request Exception: {err}")
         return None
 
-    @staticmethod
-    def search_value_in_json(json_data, key):
+    @classmethod
+    def search_value_in_json(cls, json_data, key):
         # Check if the key exists in the JSON data
         if key in json_data:
             # Return the value associated with the specified key
             return json_data[key]
         else:
             # Print an error message if the key is not found in the JSON
-            print(f"Key '{key}' not found in JSON.")
+            print(f"{Fore.BLUE}Key '{key}' not found in JSON.{Fore.RED}\n" +
+                  cls.get_complete_ip_info_json_string(json_data) + Fore.RESET)
+            Logs.error_log_manager_custom(
+                f"Key '{key}' not found in JSON.\n" + cls.get_complete_ip_info_json_string(json_data))
             return None
 
     @classmethod
-    def get_complete_ip_info_json_string(cls, ip):
-        # Obtain JSON data from the API
-        json_data = cls.get_json_from_api(ip)
+    def get_complete_ip_info_json_string(cls, json_data):
 
         return json.dumps(json_data, indent=2)
