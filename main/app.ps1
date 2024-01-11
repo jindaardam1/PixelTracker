@@ -38,6 +38,9 @@ try {
     # Execute the db query GUI
     Start-Process -FilePath "PixelTrackerDBQuery.exe" -ErrorAction Stop
 
+    # Execute the email sender GUI
+    Start-Process -FilePath "EmailServerPlaceHolder.exe" -ErrorAction Stop
+
     # Change directory to the parent directory using Set-Location
     Set-Location ..
 

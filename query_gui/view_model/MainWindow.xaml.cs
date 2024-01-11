@@ -118,9 +118,10 @@ namespace PixelTrackerDBQuery
             }
         }
 
-        private void OnRunEmailServerButtonClick(object sender, RoutedEventArgs e)
+        private void OnSearchEmailClearButtonClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Email server comming soon...", "Email server", MessageBoxButton.OK, MessageBoxImage.Information) ;
+            EmailTextBox.Text = "";
+            EmailFoundTextBlock.Text = "";
         }
 
         private string GetUserIdQueryString(int userID, ComboBoxItem order)
