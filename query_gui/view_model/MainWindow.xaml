@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="PIXELTRACKER DATABASE" Height="700" Width="1000"
         WindowStartupLocation="CenterScreen" Icon="sqlite.png"
-        ResizeMode="NoResize">
+        ResizeMode="CanMinimize">
 
     <Window.Resources>
         <!-- Define a style with a border radius for buttons -->
@@ -134,7 +134,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 15" VerticalAlignment="Center">
-                <Button Width="200" Style="{StaticResource ButtonStyleWithBorderRadius}" Content="RUN EMAIL SERVER" Click="OnRunEmailServerButtonClick" VerticalAlignment="Bottom" Name="RunEmailServerButton"/>
+                <Button Width="200" Style="{StaticResource ButtonStyleWithBorderRadius}" Content="CLEAR" Click="OnSearchEmailClearButtonClick" VerticalAlignment="Bottom" Name="RunEmailServerButton"/>
             </StackPanel>
 
         </Grid>
